@@ -87,7 +87,8 @@ final class Bootstrap
         $files[] = __DIR__.DIRECTORY_SEPARATOR.'Configuration'.DIRECTORY_SEPARATOR.'Interfaces.php';
         $files[] = __DIR__.DIRECTORY_SEPARATOR.'Configuration'.DIRECTORY_SEPARATOR.'Parameters.php';
 
-        $builder->addDefinitions($this->options, $files);
+        $builder->addDefinitions($this->options);
+        $builder->addDefinitions(...$files);
 
         $container = $builder->build();
 
