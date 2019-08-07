@@ -18,7 +18,7 @@ abstract class AbstractController
     /**
      * @var ContainerInterface
      */
-    private $container;
+    protected $container;
 
     /**
      * AbstractController constructor.
