@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace Cornfield\Core\Controller;
 
-use Cornfield\Core\Exception\JsonException;
 use Cornfield\Core\Exception\ResponseException;
 use Cornfield\Core\Exception\TemplateException;
-use Cornfield\Core\Helper\JsonHelper;
 use Cornfield\Core\Response\HtmlResponse;
 use Cornfield\Core\Response\JsonResponse;
 use Cornfield\Core\Template\TemplateInterface;
@@ -34,21 +32,16 @@ abstract class AbstractController
 
     /**
      * @param ResponseInterface $response
-     * @param mixed             $data
+     * @param string            $json
      * @param int               $status
      *
      * @return ResponseInterface
      *
      * @throws ResponseException
-     * @throws JsonException
      */
-    protected function json(ResponseInterface $response, $data, int $status = 200): ResponseInterface
+    protected function json(ResponseInterface $response, string $json, int $status = 200): ResponseInterface
     {
-        return JsonResponse::from(
-            $response,
-            JsonHelper::encode($data),
-            $status
-        );
+        return JsonResponse::from($response, $json, $status);
     }
 
     /**
