@@ -7,6 +7,7 @@ namespace Cornfield\Core;
 use Cornfield\Core\Configuration\Constants;
 use Cornfield\Core\Exception\ApplicationException;
 use Cornfield\Core\Helper\FilesystemHelper;
+use Cornfield\Core\Route\RouteInterface;
 use DI\ContainerBuilder;
 use Exception;
 use Slim\App;
@@ -42,10 +43,20 @@ final class Bootstrap
             mb_internal_encoding($this->options['charset']);
             mb_http_output($this->options['charset']);
 
-            $this->container();
+            $this->load();
         } catch (Exception $exception) {
             throw new ApplicationException('Cannot start application', 0, $exception);
         }
+    }
+
+    /**
+     * @param RouteInterface $route
+     *
+     * @return bool
+     */
+    public function addRoutes(RouteInterface $route): bool
+    {
+        return $route::add($this->app);
     }
 
     public function run(): void
@@ -56,7 +67,7 @@ final class Bootstrap
     /**
      * @throws Exception
      */
-    private function container(): void
+    private function load(): void
     {
         $builder = new ContainerBuilder();
         $files = [];
