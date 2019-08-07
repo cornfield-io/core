@@ -1,0 +1,62 @@
+{
+  "name": "cornfield-io/core",
+  "type": "project",
+  "license": "MIT",
+  "minimum-stability": "stable",
+  "config": {
+    "preferred-install": {
+      "*": "dist"
+    },
+    "sort-packages": true,
+    "optimize-autoloader": true
+  },
+  "autoload": {
+    "psr-4": {
+      "Cornfield\\Core\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Cornfield\\Core\\Tests\\": "tests/"
+    }
+  },
+  "require": {
+    "php": ">=7.2",
+    "ext-mbstring": "*",
+    "ext-session": "*",
+    "nyholm/psr7": "^1.1",
+    "nyholm/psr7-server": "^0.3.0",
+    "php-di/php-di": "^6.0",
+    "psr/container": "^1.0",
+    "slim/slim": "^4.1",
+    "symfony/options-resolver": "^4.3",
+    "twig/twig": "^2.11"
+  },
+  "require-dev": {
+    "friendsofphp/php-cs-fixer": "^2.15",
+    "maglnet/composer-require-checker": "^2.0",
+    "phpstan/phpstan": "^0.11.12",
+    "phpstan/phpstan-strict-rules": "^0.11.1",
+    "roave/no-floaters": "^1.1",
+    "roave/security-advisories": "dev-master",
+    "vimeo/psalm": "^3.4"
+  },
+  "scripts": {
+    "dev": [
+      "@require-check",
+      "@fix-style",
+      "@quality"
+    ],
+    "fix-style": [
+      "php-cs-fixer fix src --rules=@PSR1,@PSR2,@Symfony",
+      "php-cs-fixer fix tests --rules=@PSR1,@PSR2,@Symfony"
+    ],
+    "quality": [
+      "psalm",
+      "phpstan analyse --level max src"
+    ],
+    "require-check": [
+      "composer-require-checker check ./composer.json"
+    ]
+  }
+}

@@ -1,0 +1,6 @@
+includes:
+	- vendor/phpstan/phpstan-strict-rules/rules.neon
+	- vendor/roave/no-floaters/rules.neon
+
+parameters:
+	disallowFloatsEverywhere: true
