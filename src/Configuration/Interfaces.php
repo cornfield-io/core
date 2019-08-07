@@ -12,8 +12,16 @@ use Cornfield\Core\Template\TwigTemplate;
 use Psr\Container\ContainerInterface;
 
 return [
-    SessionInterface::class => static function (): SessionInterface {
-        return new NativeSession();
+    SessionInterface::class => static function (ContainerInterface $container): SessionInterface {
+        $options = [];
+
+        if ($container->has('session.options')) {
+            $options = $container->get('session.options');
+        }
+
+        $options += ['name' => 'cornfield'];
+
+        return new NativeSession($options);
     },
     TemplateInterface::class => static function (ContainerInterface $container): TemplateInterface {
         $debug = Constants::ENV_PRODUCTION !== $container->get('environment');
