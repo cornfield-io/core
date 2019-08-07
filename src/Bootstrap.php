@@ -4,10 +4,14 @@ declare(strict_types=1);
 
 namespace Cornfield\Core;
 
+use Cornfield\Core\Configuration\Constants;
+use Cornfield\Core\Exception\ApplicationException;
+use Cornfield\Core\Helper\FilesystemHelper;
 use DI\ContainerBuilder;
 use Exception;
 use Slim\App;
 use Slim\Factory\AppFactory;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 final class Bootstrap
 {
@@ -17,18 +21,31 @@ final class Bootstrap
     private $app;
 
     /**
+     * @var array
+     */
+    private $options;
+
+    /**
      * Bootstrap constructor.
      *
-     * @param string $charset
+     * @param array $options
      *
-     * @throws Exception
+     * @throws ApplicationException
      */
-    public function __construct(string $charset = 'UTF-8')
+    public function __construct(array $options = [])
     {
-        mb_internal_encoding($charset);
-        mb_http_output($charset);
+        try {
+            $resolver = new OptionsResolver();
+            $this->configureOptions($resolver);
+            $this->options = $resolver->resolve($options);
 
-        $this->container();
+            mb_internal_encoding($this->options['charset']);
+            mb_http_output($this->options['charset']);
+
+            $this->container();
+        } catch (Exception $exception) {
+            throw new ApplicationException('Cannot start application', 0, $exception);
+        }
     }
 
     public function run(): void
@@ -42,10 +59,24 @@ final class Bootstrap
     private function container(): void
     {
         $builder = new ContainerBuilder();
-        $builder->addDefinitions(
-            __DIR__.DIRECTORY_SEPARATOR.'Configuration'.DIRECTORY_SEPARATOR.'Interfaces.php',
-            __DIR__.DIRECTORY_SEPARATOR.'Configuration'.DIRECTORY_SEPARATOR.'Parameters.php'
-        );
+        $files = [];
+
+        if (null !== $this->options['path.configuration']) {
+            $root = rtrim($this->options['path.configuration'], DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
+
+            foreach (['Configuration', 'Configuration.'.$this->options['environment']] as $file) {
+                $path = $root.$file.'.php';
+
+                if (FilesystemHelper::isFileReadable($path)) {
+                    $files[] = $root;
+                }
+            }
+        }
+
+        $files[] = __DIR__.DIRECTORY_SEPARATOR.'Configuration'.DIRECTORY_SEPARATOR.'Interfaces.php';
+        $files[] = __DIR__.DIRECTORY_SEPARATOR.'Configuration'.DIRECTORY_SEPARATOR.'Parameters.php';
+
+        $builder->addDefinitions($this->options, $files);
 
         $container = $builder->build();
 
@@ -53,5 +84,22 @@ final class Bootstrap
         $this->app = AppFactory::create();
 
         $container->set(App::class, $this->app);
+    }
+
+    /**
+     * @param OptionsResolver $resolver
+     */
+    private function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver->setDefaults(
+            [
+                'charset' => 'utf-8',
+                'environment' => getenv('PHP_ENVIRONMENT') ?: Constants::ENV_PRODUCTION,
+                'path.configuration' => null,
+            ]
+        );
+
+        $resolver->setAllowedTypes('charset', 'string');
+        $resolver->setAllowedTypes('path.configuration', ['null', 'string']);
     }
 }
