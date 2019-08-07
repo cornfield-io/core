@@ -8,7 +8,7 @@ use Cornfield\Core\Exception\ResponseException;
 use Exception;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
-use Slim\Factory\Psr17\Psr17Factory;
+use Slim\Factory\Psr17\NyholmPsr17Factory;
 
 abstract class AbstractResponse
 {
@@ -17,7 +17,7 @@ abstract class AbstractResponse
      */
     protected static function getResponse(): ResponseInterface
     {
-        return Psr17Factory::getResponseFactory()->createResponse();
+        return NyholmPsr17Factory::getResponseFactory()->createResponse();
     }
 
     /**
@@ -34,7 +34,7 @@ abstract class AbstractResponse
                 return $content;
             }
 
-            return Psr17Factory::getStreamFactory()->createStream($content);
+            return NyholmPsr17Factory::getStreamFactory()->createStream($content);
         } catch (Exception $exception) {
             throw new ResponseException('Content must be a string or StreamInterface', 0, $exception);
         }
