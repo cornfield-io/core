@@ -79,7 +79,7 @@ final class Bootstrap
                 $path = $root.$file.'.php';
 
                 if (FilesystemHelper::isFileReadable($path)) {
-                    $files[] = $root;
+                    $files[] = $path;
                 }
             }
         }
