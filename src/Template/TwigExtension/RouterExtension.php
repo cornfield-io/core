@@ -9,7 +9,7 @@ use Slim\Interfaces\RouteParserInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
-final class RouterTwigExtension extends AbstractExtension
+final class RouterExtension extends AbstractExtension
 {
     /**
      * @var RouteParserInterface
@@ -17,7 +17,7 @@ final class RouterTwigExtension extends AbstractExtension
     private $router;
 
     /**
-     * RouterTwigExtension constructor.
+     * RouterExtension constructor.
      *
      * @param App $app
      */
