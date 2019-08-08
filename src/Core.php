@@ -14,7 +14,7 @@ use Slim\App;
 use Slim\Factory\AppFactory;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-final class Bootstrap
+final class Core
 {
     /**
      * @var App
@@ -27,7 +27,7 @@ final class Bootstrap
     private $options;
 
     /**
-     * Bootstrap constructor.
+     * Core constructor.
      *
      * @param array $options
      *
