@@ -9,9 +9,9 @@ use Cornfield\Core\Exception\ApplicationException;
 use Cornfield\Core\Helper\FilesystemHelper;
 use DI\ContainerBuilder;
 use Exception;
-use Psr\Container\ContainerInterface;
 use Slim\App;
 use Slim\Factory\AppFactory;
+use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 final class Kernel
@@ -20,11 +20,6 @@ final class Kernel
      * @var App
      */
     private $app;
-
-    /**
-     * @var ContainerInterface
-     */
-    private $container;
 
     /**
      * @var array
@@ -49,7 +44,10 @@ final class Kernel
             mb_http_output($this->options['charset']);
 
             $this->load();
-            $this->configure();
+
+            if (null !== $this->options['path.cache']) {
+                $this->app->getRouteCollector()->setCacheFile($this->options['path.cache'].'routes.cache');
+            }
         } catch (Exception $exception) {
             throw new ApplicationException('Cannot start application', 0, $exception);
         }
@@ -58,13 +56,6 @@ final class Kernel
     public function run(): void
     {
         $this->app->run();
-    }
-
-    private function configure(): void
-    {
-        if ($this->container->has('path.cache')) {
-            $this->app->getRouteCollector()->setCacheFile($this->container->get('path.cache').DIRECTORY_SEPARATOR.'routes.cache');
-        }
     }
 
     /**
@@ -76,7 +67,7 @@ final class Kernel
         $builder->addDefinitions($this->options);
 
         if (null !== $this->options['path.configuration']) {
-            $root = rtrim($this->options['path.configuration'], DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
+            $root = FilesystemHelper::path($this->options['path.configuration']);
 
             foreach (['Configuration', 'Configuration.'.$this->options['environment']] as $file) {
                 $path = $root.$file.'.php';
@@ -90,12 +81,12 @@ final class Kernel
         $builder->addDefinitions(__DIR__.DIRECTORY_SEPARATOR.'Configuration'.DIRECTORY_SEPARATOR.'Interfaces.php');
         $builder->addDefinitions(__DIR__.DIRECTORY_SEPARATOR.'Configuration'.DIRECTORY_SEPARATOR.'Parameters.php');
 
-        $this->container = $builder->build();
+        $container = $builder->build();
 
-        AppFactory::setContainer($this->container);
+        AppFactory::setContainer($container);
         $this->app = AppFactory::create();
 
-        $this->container->set(App::class, $this->app);
+        $container->set(App::class, $this->app);
     }
 
     /**
@@ -107,11 +98,20 @@ final class Kernel
             [
                 'charset' => 'utf-8',
                 'environment' => getenv('PHP_ENVIRONMENT') ?: Constants::ENV_PRODUCTION,
+                'path.cache' => null,
                 'path.configuration' => null,
             ]
         );
 
         $resolver->setAllowedTypes('charset', 'string');
+        $resolver->setAllowedTypes('path.cache', ['null', 'string']);
         $resolver->setAllowedTypes('path.configuration', ['null', 'string']);
+
+        $normalizePath = static function (Options $options, ?string $value): ?string {
+            return null === $value ? null : FilesystemHelper::path($value);
+        };
+
+        $resolver->setNormalizer('path.cache', $normalizePath);
+        $resolver->setNormalizer('path.configuration', $normalizePath);
     }
 }
