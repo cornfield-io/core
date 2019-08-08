@@ -14,7 +14,7 @@ use Slim\App;
 use Slim\Factory\AppFactory;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-final class Core
+final class Kernel
 {
     /**
      * @var App
@@ -27,7 +27,7 @@ final class Core
     private $options;
 
     /**
-     * Core constructor.
+     * Kernel constructor.
      *
      * @param array $options
      *
