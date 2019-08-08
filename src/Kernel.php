@@ -22,11 +22,6 @@ final class Kernel
     private $app;
 
     /**
-     * @var array
-     */
-    private $options;
-
-    /**
      * Kernel constructor.
      *
      * @param array $options
@@ -38,15 +33,15 @@ final class Kernel
         try {
             $resolver = new OptionsResolver();
             $this->configureOptions($resolver);
-            $this->options = $resolver->resolve($options);
+            $options = $resolver->resolve($options);
 
-            mb_internal_encoding($this->options['charset']);
-            mb_http_output($this->options['charset']);
+            mb_internal_encoding($options['charset']);
+            mb_http_output($options['charset']);
 
-            $this->load();
+            $this->load($options);
 
-            if (null !== $this->options['path.cache']) {
-                $this->app->getRouteCollector()->setCacheFile($this->options['path.cache'].'routes.cache');
+            if (null !== $options['path.cache']) {
+                $this->app->getRouteCollector()->setCacheFile($options['path.cache'].'routes.cache');
             }
         } catch (Exception $exception) {
             throw new ApplicationException('Cannot start application', 0, $exception);
@@ -59,17 +54,19 @@ final class Kernel
     }
 
     /**
+     * @param array $options
+     *
      * @throws Exception
      */
-    private function load(): void
+    private function load(array $options): void
     {
         $builder = new ContainerBuilder();
-        $builder->addDefinitions($this->options);
+        $builder->addDefinitions($options);
 
-        if (null !== $this->options['path.configuration']) {
-            $root = FilesystemHelper::path($this->options['path.configuration']);
+        if (null !== $options['path.configuration']) {
+            $root = FilesystemHelper::path($options['path.configuration']);
 
-            foreach (['Configuration', 'Configuration.'.$this->options['environment']] as $file) {
+            foreach (['Configuration', 'Configuration.'.$options['environment']] as $file) {
                 $path = $root.$file.'.php';
 
                 if (FilesystemHelper::isFileReadable($path)) {
