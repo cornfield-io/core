@@ -33,7 +33,7 @@ return [
         $options = ['auto_reload' => $debug, 'debug' => $debug];
 
         if (false === $debug && $container->has('template.path.cache')) {
-            $options += ['cache' => $container->get('template.path.cache')];
+            $options += ['cache' => $container->get('template.path.cache') ?? false];
         }
 
         if (false === $container->has('template.path.views')) {

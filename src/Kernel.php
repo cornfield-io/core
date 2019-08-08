@@ -7,9 +7,9 @@ namespace Cornfield\Core;
 use Cornfield\Core\Configuration\Constants;
 use Cornfield\Core\Exception\ApplicationException;
 use Cornfield\Core\Helper\FilesystemHelper;
-use Cornfield\Core\Route\RouteInterface;
 use DI\ContainerBuilder;
 use Exception;
+use Psr\Container\ContainerInterface;
 use Slim\App;
 use Slim\Factory\AppFactory;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -20,6 +20,11 @@ final class Kernel
      * @var App
      */
     private $app;
+
+    /**
+     * @var ContainerInterface
+     */
+    private $container;
 
     /**
      * @var array
@@ -44,24 +49,22 @@ final class Kernel
             mb_http_output($this->options['charset']);
 
             $this->load();
+            $this->configure();
         } catch (Exception $exception) {
             throw new ApplicationException('Cannot start application', 0, $exception);
         }
     }
 
-    /**
-     * @param RouteInterface $route
-     *
-     * @return bool
-     */
-    public function addRoutes(RouteInterface $route): bool
-    {
-        return $route::add($this->app);
-    }
-
     public function run(): void
     {
         $this->app->run();
+    }
+
+    private function configure(): void
+    {
+        if ($this->container->has('path.cache')) {
+            $this->app->getRouteCollector()->setCacheFile($this->container->get('path.cache').DIRECTORY_SEPARATOR.'routes.cache');
+        }
     }
 
     /**
@@ -70,7 +73,7 @@ final class Kernel
     private function load(): void
     {
         $builder = new ContainerBuilder();
-        $files = [];
+        $builder->addDefinitions($this->options);
 
         if (null !== $this->options['path.configuration']) {
             $root = rtrim($this->options['path.configuration'], DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
@@ -79,23 +82,20 @@ final class Kernel
                 $path = $root.$file.'.php';
 
                 if (FilesystemHelper::isFileReadable($path)) {
-                    $files[] = $path;
+                    $builder->addDefinitions($path);
                 }
             }
         }
 
-        $files[] = __DIR__.DIRECTORY_SEPARATOR.'Configuration'.DIRECTORY_SEPARATOR.'Interfaces.php';
-        $files[] = __DIR__.DIRECTORY_SEPARATOR.'Configuration'.DIRECTORY_SEPARATOR.'Parameters.php';
+        $builder->addDefinitions(__DIR__.DIRECTORY_SEPARATOR.'Configuration'.DIRECTORY_SEPARATOR.'Interfaces.php');
+        $builder->addDefinitions(__DIR__.DIRECTORY_SEPARATOR.'Configuration'.DIRECTORY_SEPARATOR.'Parameters.php');
 
-        $builder->addDefinitions($this->options);
-        $builder->addDefinitions(...$files);
+        $this->container = $builder->build();
 
-        $container = $builder->build();
-
-        AppFactory::setContainer($container);
+        AppFactory::setContainer($this->container);
         $this->app = AppFactory::create();
 
-        $container->set(App::class, $this->app);
+        $this->container->set(App::class, $this->app);
     }
 
     /**
