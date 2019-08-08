@@ -40,6 +40,14 @@ return [
             throw new InvalidParameterException('The key "template.path.views" is undefined');
         }
 
-        return new TwigTemplate($container->get('template.path.views'), $options, []);
+        $extensions = [];
+
+        foreach (['template.twig.extensions', 'template.twig.default.extensions'] as $list) {
+            if ($container->has($list)) {
+                $extensions += (array) $container->get($list);
+            }
+        }
+
+        return new TwigTemplate($container->get('template.path.views'), $options, $extensions);
     },
 ];
