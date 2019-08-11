@@ -28,14 +28,14 @@ return [
         return new Psr16Cache(new NullAdapter());
     },
     I18nInterface::class => static function (ContainerInterface $container): I18nInterface {
-        if ($container->has('path.i18n.language.default')) {
-            throw new InvalidParameterException('The key "path.i18n.language.default" is undefined');
+        if ($container->has('i18n.path.language.default')) {
+            throw new InvalidParameterException('The key "i18n.path.language.default" is undefined');
         }
 
         return new JsonI18n(
             $container->get(CacheInterface::class),
-            (string) $container->get('path.i18n.language.default'),
-            $container->has('path.i18n.language.callback') ? (string) $container->has('path.i18n.language.callback') : ''
+            (string) $container->get('i18n.path.language.default'),
+            $container->has('i18n.path.language.callback') ? (string) $container->has('i18n.path.language.callback') : ''
         );
     },
     SessionInterface::class => static function (ContainerInterface $container): SessionInterface {
@@ -62,8 +62,8 @@ return [
             $options += ['cache' => $container->get('template.path.cache') ?? false];
         }
 
-        if (false === $container->has('path.template.views')) {
-            throw new InvalidParameterException('The key "path.template.views" is undefined');
+        if (false === $container->has('template.path.views')) {
+            throw new InvalidParameterException('The key "template.path.views" is undefined');
         }
 
         $extensions = [];
