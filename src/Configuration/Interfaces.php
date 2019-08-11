@@ -74,6 +74,6 @@ return [
             }
         }
 
-        return new TwigTemplate($container->get('path.template.views'), $options, $extensions);
+        return new TwigTemplate($container->get('template.path.views'), $options, $extensions);
     },
 ];
