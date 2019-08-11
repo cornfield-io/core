@@ -80,7 +80,7 @@ final class JsonI18n implements I18nInterface
                 continue;
             }
 
-            $this->translation += JsonHelper::decode($content);
+            $this->translation += JsonHelper::decode($content, true);
         }
 
         $cache->set($key, $this->translation);
