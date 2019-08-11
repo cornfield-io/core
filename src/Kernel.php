@@ -7,6 +7,8 @@ namespace Cornfield\Core;
 use Cornfield\Core\Configuration\Constants;
 use Cornfield\Core\Exception\ApplicationException;
 use Cornfield\Core\Helper\FilesystemHelper;
+use Cornfield\Core\Router\Route;
+use Cornfield\Core\Router\RouteInterface;
 use DI\ContainerBuilder;
 use Exception;
 use Slim\App;
@@ -51,6 +53,72 @@ final class Kernel
     public function run(): void
     {
         $this->app->run();
+    }
+
+    /**
+     * @param string          $pattern
+     * @param callable|string $callable
+     *
+     * @return RouteInterface
+     */
+    public function get(string $pattern, $callable): RouteInterface
+    {
+        return new Route($this->app->get($pattern, $callable));
+    }
+
+    /**
+     * @param string          $pattern
+     * @param callable|string $callable
+     *
+     * @return RouteInterface
+     */
+    public function post(string $pattern, $callable): RouteInterface
+    {
+        return new Route($this->app->post($pattern, $callable));
+    }
+
+    /**
+     * @param string          $pattern
+     * @param callable|string $callable
+     *
+     * @return RouteInterface
+     */
+    public function put(string $pattern, $callable): RouteInterface
+    {
+        return new Route($this->app->put($pattern, $callable));
+    }
+
+    /**
+     * @param string          $pattern
+     * @param callable|string $callable
+     *
+     * @return RouteInterface
+     */
+    public function patch(string $pattern, $callable): RouteInterface
+    {
+        return new Route($this->app->patch($pattern, $callable));
+    }
+
+    /**
+     * @param string          $pattern
+     * @param callable|string $callable
+     *
+     * @return RouteInterface
+     */
+    public function delete(string $pattern, $callable): RouteInterface
+    {
+        return new Route($this->app->delete($pattern, $callable));
+    }
+
+    /**
+     * @param string          $pattern
+     * @param callable|string $callable
+     *
+     * @return RouteInterface
+     */
+    public function options(string $pattern, $callable): RouteInterface
+    {
+        return new Route($this->app->options($pattern, $callable));
     }
 
     /**
