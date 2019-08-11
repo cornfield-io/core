@@ -28,6 +28,14 @@ final class FilesystemHelper
      */
     public static function getFileContent(string $filename, ?string $default = ''): string
     {
+        if (false === self::isFileReadable($filename)) {
+            if (null === $default) {
+                throw new InvalidParameterException('Can not read file: '.$filename);
+            }
+
+            return $default;
+        }
+
         $content = file_get_contents($filename);
 
         if (false === is_string($content)) {
