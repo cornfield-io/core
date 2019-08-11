@@ -13,14 +13,4 @@ interface RequestMethodInterface
     public const METHOD_HEAD = 'HEAD';
     public const METHOD_PATCH = 'PATCH';
     public const METHOD_OPTIONS = 'OPTIONS';
-
-    public const METHODS = [
-        self::METHOD_GET,
-        self::METHOD_POST,
-        self::METHOD_PUT,
-        self::METHOD_DELETE,
-        self::METHOD_HEAD,
-        self::METHOD_PATCH,
-        self::METHOD_OPTIONS,
-    ];
 }
