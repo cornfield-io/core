@@ -6,9 +6,10 @@ namespace Cornfield\Core\Template\TwigExtension;
 
 use Cornfield\Core\Exception\InvalidParameterException;
 use Cornfield\Core\I18n\I18nInterface;
+use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
-final class I18nExtension
+final class I18nExtension extends AbstractExtension
 {
     /**
      * @var I18nInterface
