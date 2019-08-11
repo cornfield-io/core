@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Cornfield\Core\Router;
 
-interface RouteCollectorProxyInterface
+interface RouteCollectorProxyInterface extends RequestMethodInterface
 {
     /**
      * @param string          $pattern

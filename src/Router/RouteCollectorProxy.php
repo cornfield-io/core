@@ -7,7 +7,7 @@ namespace Cornfield\Core\Router;
 use Slim\Interfaces\RouteCollectorProxyInterface as SlimRouteCollectorProxyInterface;
 use Slim\Routing\RouteCollectorProxy as SlimRouteCollectorProxy;
 
-final class RouteCollectorProxy implements RouteCollectorProxyInterface, RequestMethodInterface
+final class RouteCollectorProxy implements RouteCollectorProxyInterface
 {
     /**
      * @var SlimRouteCollectorProxyInterface
