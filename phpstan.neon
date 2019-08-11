@@ -4,3 +4,5 @@ includes:
 
 parameters:
 	disallowFloatsEverywhere: true
+	ignoreErrors:
+		- '#Psr\\SimpleCache\\InvalidArgumentException is not subtype of Throwable#'

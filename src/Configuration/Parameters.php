@@ -6,6 +6,7 @@ namespace Cornfield\Core\Configuration;
 
 use Cornfield\Core\Middleware\ReduceHtmlOutputMiddleware;
 use Cornfield\Core\Middleware\TrailingSlashMiddleware;
+use Cornfield\Core\Template\TwigExtension\I18nExtension;
 use Cornfield\Core\Template\TwigExtension\RouterExtension;
 use Psr\Container\ContainerInterface;
 
@@ -23,6 +24,7 @@ return [
     },
     'template.twig.default.extensions' => static function (ContainerInterface $container): array {
         return [
+            $container->get(I18nExtension::class),
             $container->get(RouterExtension::class),
         ];
     },

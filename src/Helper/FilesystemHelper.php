@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Cornfield\Core\Helper;
 
+use Cornfield\Core\Exception\InvalidParameterException;
+
 final class FilesystemHelper
 {
     /**
@@ -14,6 +16,29 @@ final class FilesystemHelper
     public static function isFileReadable(string $filename): bool
     {
         return is_file($filename) && is_readable($filename);
+    }
+
+    /**
+     * @param string      $filename
+     * @param string|null $default
+     *
+     * @return string
+     *
+     * @throws InvalidParameterException
+     */
+    public static function getFileContent(string $filename, ?string $default = ''): string
+    {
+        $content = file_get_contents($filename);
+
+        if (false === is_string($content)) {
+            if (null === $default) {
+                throw new InvalidParameterException('Can not read file: '.$filename);
+            }
+
+            return $default;
+        }
+
+        return $content;
     }
 
     /**
