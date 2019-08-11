@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Cornfield\Core\Router;
 
 use Slim\Interfaces\RouteCollectorProxyInterface as SlimRouteCollectorProxyInterface;
+use Slim\Routing\RouteCollectorProxy as SlimRouteCollectorProxy;
 
 final class RouteCollectorProxy implements RouteCollectorProxyInterface
 {
@@ -92,6 +93,10 @@ final class RouteCollectorProxy implements RouteCollectorProxyInterface
      */
     public function group(string $pattern, callable $callable): RouteGroupInterface
     {
-        return new RouteGroup($this->routeCollectorProxy->group($pattern, $callable));
+        $factory = function (SlimRouteCollectorProxy $routeCollectorProxy) use ($callable): void {
+            $callable(new RouteCollectorProxy($routeCollectorProxy));
+        };
+
+        return new RouteGroup($this->routeCollectorProxy->group($pattern, $factory));
     }
 }
