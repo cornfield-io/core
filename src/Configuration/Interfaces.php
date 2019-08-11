@@ -28,7 +28,7 @@ return [
         return new Psr16Cache(new NullAdapter());
     },
     I18nInterface::class => static function (ContainerInterface $container): I18nInterface {
-        if ($container->has('i18n.path.language.default')) {
+        if (false === $container->has('i18n.path.language.default')) {
             throw new InvalidParameterException('The key "i18n.path.language.default" is undefined');
         }
 
