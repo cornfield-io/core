@@ -72,10 +72,10 @@ interface RouteCollectorProxyInterface
     public function map(array $methods, string $pattern, $callable): RouteInterface;
 
     /**
-     * @param string          $pattern
-     * @param callable|string $callable
+     * @param string   $pattern
+     * @param callable $callable
      *
      * @return RouteGroupInterface
      */
-    public function group(string $pattern, $callable): RouteGroupInterface;
+    public function group(string $pattern, callable $callable): RouteGroupInterface;
 }

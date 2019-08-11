@@ -8,6 +8,7 @@ use Cornfield\Core\Configuration\Constants;
 use Cornfield\Core\Exception\ApplicationException;
 use Cornfield\Core\Helper\FilesystemHelper;
 use Cornfield\Core\Router\Route;
+use Cornfield\Core\Router\RouteCollectorProxy;
 use Cornfield\Core\Router\RouteCollectorProxyInterface;
 use Cornfield\Core\Router\RouteGroup;
 use Cornfield\Core\Router\RouteGroupInterface;
@@ -16,6 +17,7 @@ use DI\ContainerBuilder;
 use Exception;
 use Slim\App;
 use Slim\Factory\AppFactory;
+use Slim\Routing\RouteCollectorProxy as SlimRouteCollectorProxy;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -125,9 +127,15 @@ final class Kernel implements RouteCollectorProxyInterface
     /**
      * {@inheritdoc}
      */
-    public function group(string $pattern, $callable): RouteGroupInterface
+    public function group(string $pattern, callable $callable): RouteGroupInterface
     {
-        return new RouteGroup($this->app->group($pattern, $callable));
+        $factory = function (SlimRouteCollectorProxy $routeCollectorProxy) use ($callable): callable {
+            $routeCollectorProxy = new RouteCollectorProxy($routeCollectorProxy);
+
+            return $callable($routeCollectorProxy);
+        };
+
+        return new RouteGroup($this->app->group($pattern, $factory));
     }
 
     /**
