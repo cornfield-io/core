@@ -31,6 +31,7 @@
     "paragonie/hidden-string": "^1.0",
     "php-di/php-di": "^6.0",
     "psr/container": "^1.0",
+    "psr/http-factory": "^1.0",
     "psr/http-message": "^1.0",
     "slim/slim": "^4.1",
     "symfony/options-resolver": "^4.3",

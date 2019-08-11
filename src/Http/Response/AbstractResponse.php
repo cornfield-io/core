@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Cornfield\Core\Response;
 
 use Cornfield\Core\Exception\ResponseException;
+use Cornfield\Core\Http\Factory\StreamFactory;
 use Exception;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
@@ -34,7 +35,7 @@ abstract class AbstractResponse
                 return $content;
             }
 
-            return NyholmPsr17Factory::getStreamFactory()->createStream($content);
+            return (new StreamFactory())->createStream($content);
         } catch (Exception $exception) {
             throw new ResponseException('Content must be a string or StreamInterface', 0, $exception);
         }
