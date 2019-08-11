@@ -6,4 +6,10 @@ namespace Cornfield\Core\Router;
 
 interface RouteInterface
 {
+    /**
+     * @param string $name
+     *
+     * @return RouteInterface
+     */
+    public function setName(string $name): RouteInterface;
 }

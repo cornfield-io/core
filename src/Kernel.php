@@ -8,6 +8,9 @@ use Cornfield\Core\Configuration\Constants;
 use Cornfield\Core\Exception\ApplicationException;
 use Cornfield\Core\Helper\FilesystemHelper;
 use Cornfield\Core\Router\Route;
+use Cornfield\Core\Router\RouteCollectorProxyInterface;
+use Cornfield\Core\Router\RouteGroup;
+use Cornfield\Core\Router\RouteGroupInterface;
 use Cornfield\Core\Router\RouteInterface;
 use DI\ContainerBuilder;
 use Exception;
@@ -16,7 +19,7 @@ use Slim\Factory\AppFactory;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-final class Kernel
+final class Kernel implements RouteCollectorProxyInterface
 {
     /**
      * @var App
@@ -56,10 +59,7 @@ final class Kernel
     }
 
     /**
-     * @param string          $pattern
-     * @param callable|string $callable
-     *
-     * @return RouteInterface
+     * {@inheritdoc}
      */
     public function get(string $pattern, $callable): RouteInterface
     {
@@ -67,10 +67,7 @@ final class Kernel
     }
 
     /**
-     * @param string          $pattern
-     * @param callable|string $callable
-     *
-     * @return RouteInterface
+     * {@inheritdoc}
      */
     public function post(string $pattern, $callable): RouteInterface
     {
@@ -78,10 +75,7 @@ final class Kernel
     }
 
     /**
-     * @param string          $pattern
-     * @param callable|string $callable
-     *
-     * @return RouteInterface
+     * {@inheritdoc}
      */
     public function put(string $pattern, $callable): RouteInterface
     {
@@ -89,10 +83,7 @@ final class Kernel
     }
 
     /**
-     * @param string          $pattern
-     * @param callable|string $callable
-     *
-     * @return RouteInterface
+     * {@inheritdoc}
      */
     public function patch(string $pattern, $callable): RouteInterface
     {
@@ -100,10 +91,7 @@ final class Kernel
     }
 
     /**
-     * @param string          $pattern
-     * @param callable|string $callable
-     *
-     * @return RouteInterface
+     * {@inheritdoc}
      */
     public function delete(string $pattern, $callable): RouteInterface
     {
@@ -111,14 +99,35 @@ final class Kernel
     }
 
     /**
-     * @param string          $pattern
-     * @param callable|string $callable
-     *
-     * @return RouteInterface
+     * {@inheritdoc}
      */
     public function options(string $pattern, $callable): RouteInterface
     {
         return new Route($this->app->options($pattern, $callable));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function any(string $pattern, $callable): RouteInterface
+    {
+        return new Route($this->app->any($pattern, $callable));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function map(array $methods, string $pattern, $callable): RouteInterface
+    {
+        return new Route($this->app->map($methods, $pattern, $callable));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function group(string $pattern, $callable): RouteGroupInterface
+    {
+        return new RouteGroup($this->app->group($pattern, $callable));
     }
 
     /**

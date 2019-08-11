@@ -22,4 +22,14 @@ final class Route implements RouteInterface
     {
         $this->route = $route;
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setName(string $name): RouteInterface
+    {
+        $this->route->setName($name);
+
+        return $this;
+    }
 }
