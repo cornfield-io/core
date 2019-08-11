@@ -28,14 +28,14 @@ return [
         return new Psr16Cache(new NullAdapter());
     },
     I18nInterface::class => static function (ContainerInterface $container): I18nInterface {
-        if ($container->has('i18n.path.language.default')) {
+        if ($container->has('path.i18n.language.default')) {
             throw new InvalidParameterException('Default language is not defined');
         }
 
         return new JsonI18n(
             $container->get(CacheInterface::class),
-            (string) $container->get('i18n.path.language.default'),
-            $container->has('i18n.path.language.callback') ? (string) $container->has('i18n.path.language.callback') : ''
+            (string) $container->get('path.i18n.language.default'),
+            $container->has('path.i18n.language.callback') ? (string) $container->has('path.i18n.language.callback') : ''
         );
     },
     SessionInterface::class => static function (ContainerInterface $container): SessionInterface {
