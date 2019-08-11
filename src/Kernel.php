@@ -129,10 +129,8 @@ final class Kernel implements RouteCollectorProxyInterface
      */
     public function group(string $pattern, callable $callable): RouteGroupInterface
     {
-        $factory = function (SlimRouteCollectorProxy $routeCollectorProxy) use ($callable): callable {
-            $routeCollectorProxy = new RouteCollectorProxy($routeCollectorProxy);
-
-            return $callable($routeCollectorProxy);
+        $factory = function (SlimRouteCollectorProxy $routeCollectorProxy) use ($callable): void {
+            $callable(new RouteCollectorProxy($routeCollectorProxy));
         };
 
         return new RouteGroup($this->app->group($pattern, $factory));
