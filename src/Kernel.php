@@ -15,6 +15,7 @@ use Cornfield\Core\Router\RouteGroupInterface;
 use Cornfield\Core\Router\RouteInterface;
 use DI\ContainerBuilder;
 use Exception;
+use Psr\Container\ContainerInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Slim\App;
 use Slim\Factory\AppFactory;
@@ -24,6 +25,11 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 final class Kernel implements RouteCollectorProxyInterface
 {
+    /**
+     * @var ContainerInterface
+     */
+    private $container;
+
     /**
      * @var App
      */
@@ -51,6 +57,14 @@ final class Kernel implements RouteCollectorProxyInterface
         } catch (Exception $exception) {
             throw new ApplicationException('Cannot start application', 0, $exception);
         }
+    }
+
+    /**
+     * @return ContainerInterface
+     */
+    public function getContainer(): ContainerInterface
+    {
+        return $this->container;
     }
 
     public function run(): void
@@ -134,25 +148,16 @@ final class Kernel implements RouteCollectorProxyInterface
         return new RouteGroup($this->app->group($pattern, $factory));
     }
 
-    /**
-     * @throws ApplicationException
-     */
     private function configure(): void
     {
-        $container = $this->app->getContainer();
-
-        if (null === $container) {
-            throw new ApplicationException('Container is not defined');
-        }
-
-        $cache = $container->get('path.cache');
+        $cache = $this->container->get('path.cache');
         if (null !== $cache) {
             $this->app->getRouteCollector()->setCacheFile($cache.'routes.cache');
         }
 
-        foreach ($container->get('middleware.add.default') as $middleware) {
+        foreach ($this->container->get('middleware.add.default') as $middleware) {
             if (false === ($middleware instanceof MiddlewareInterface)) {
-                $middleware = $container->get($middleware);
+                $middleware = $this->container->get($middleware);
             }
 
             $this->app->addMiddleware($middleware);
@@ -184,12 +189,12 @@ final class Kernel implements RouteCollectorProxyInterface
         $builder->addDefinitions(__DIR__.DIRECTORY_SEPARATOR.'Configuration'.DIRECTORY_SEPARATOR.'Interfaces.php');
         $builder->addDefinitions(__DIR__.DIRECTORY_SEPARATOR.'Configuration'.DIRECTORY_SEPARATOR.'Parameters.php');
 
-        $container = $builder->build();
+        $this->container = $builder->build();
 
-        AppFactory::setContainer($container);
+        AppFactory::setContainer($this->container);
         $this->app = AppFactory::create();
 
-        $container->set(App::class, $this->app);
+        $this->container->set(App::class, $this->app);
     }
 
     /**
