@@ -29,7 +29,7 @@ return [
     },
     I18nInterface::class => static function (ContainerInterface $container): I18nInterface {
         if ($container->has('path.i18n.language.default')) {
-            throw new InvalidParameterException('Default language is not defined');
+            throw new InvalidParameterException('The key "path.i18n.language.default" is undefined');
         }
 
         return new JsonI18n(
@@ -62,8 +62,8 @@ return [
             $options += ['cache' => $container->get('template.path.cache') ?? false];
         }
 
-        if (false === $container->has('template.path.views')) {
-            throw new InvalidParameterException('The key "template.path.views" is undefined');
+        if (false === $container->has('path.template.views')) {
+            throw new InvalidParameterException('The key "path.template.views" is undefined');
         }
 
         $extensions = [];
@@ -74,6 +74,6 @@ return [
             }
         }
 
-        return new TwigTemplate($container->get('template.path.views'), $options, $extensions);
+        return new TwigTemplate($container->get('path.template.views'), $options, $extensions);
     },
 ];
