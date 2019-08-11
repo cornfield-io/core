@@ -15,6 +15,7 @@ use Cornfield\Core\Router\RouteGroupInterface;
 use Cornfield\Core\Router\RouteInterface;
 use DI\ContainerBuilder;
 use Exception;
+use Psr\Http\Server\MiddlewareInterface;
 use Slim\App;
 use Slim\Factory\AppFactory;
 use Slim\Routing\RouteCollectorProxy as SlimRouteCollectorProxy;
@@ -46,10 +47,7 @@ final class Kernel implements RouteCollectorProxyInterface
             mb_http_output($options['charset']);
 
             $this->load($options);
-
-            if (null !== $options['path.cache']) {
-                $this->app->getRouteCollector()->setCacheFile($options['path.cache'].'routes.cache');
-            }
+            $this->configure();
         } catch (Exception $exception) {
             throw new ApplicationException('Cannot start application', 0, $exception);
         }
@@ -134,6 +132,31 @@ final class Kernel implements RouteCollectorProxyInterface
         };
 
         return new RouteGroup($this->app->group($pattern, $factory));
+    }
+
+    /**
+     * @throws ApplicationException
+     */
+    private function configure(): void
+    {
+        $container = $this->app->getContainer();
+
+        if (null === $container) {
+            throw new ApplicationException('Container is not defined');
+        }
+
+        $cache = $container->get('path.cache');
+        if (null !== $cache) {
+            $this->app->getRouteCollector()->setCacheFile($cache.'routes.cache');
+        }
+
+        foreach ($container->get('middleware.add.default') as $middleware) {
+            if (false === ($middleware instanceof MiddlewareInterface)) {
+                $middleware = $container->get($middleware);
+            }
+
+            $this->app->addMiddleware($middleware);
+        }
     }
 
     /**
