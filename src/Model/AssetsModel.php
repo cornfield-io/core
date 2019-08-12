@@ -33,16 +33,17 @@ final class AssetsModel extends AbstractModel
 
     /**
      * @param string $filename
+     * @param int    $version
      *
      * @return AssetEntity
      *
-     * @throws InvalidParameterException
      * @throws InvalidArgumentException
+     * @throws InvalidParameterException
      */
-    public function get(string $filename): AssetEntity
+    public function get(string $filename, int $version): AssetEntity
     {
         $cache = $this->container->get(CacheInterface::class);
-        $key = 'assets.'.hash('sha256', $filename);
+        $key = 'assets.'.hash('sha256', $filename.$version);
 
         if (false === $cache->has($key)) {
             $content = FilesystemHelper::getFileContent($filename, null);
