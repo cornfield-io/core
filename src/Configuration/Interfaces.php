@@ -70,7 +70,7 @@ return [
         $extensions = [];
 
         if ($container->has('template.twig.default.extensions')) {
-            $extensions += (array) $container->get('template.twig.default.extensions');
+            array_push($extensions, ...$container->get('template.twig.default.extensions'));
         }
 
         if ($container->has('template.twig.extensions')) {
