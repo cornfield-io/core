@@ -4,7 +4,11 @@ declare(strict_types=1);
 
 namespace Cornfield\Core\Configuration;
 
+use Buzz\Browser;
+use Buzz\Client\MultiCurl;
 use Cornfield\Core\Exception\InvalidParameterException;
+use Cornfield\Core\Http\Factory\RequestFactory;
+use Cornfield\Core\Http\Factory\ResponseFactory;
 use Cornfield\Core\I18n\I18nInterface;
 use Cornfield\Core\I18n\JsonI18n;
 use Cornfield\Core\Session\NativeSession;
@@ -13,6 +17,7 @@ use Cornfield\Core\Template\TemplateInterface;
 use Cornfield\Core\Template\TwigExtension\UniversalExtension;
 use Cornfield\Core\Template\TwigTemplate;
 use Psr\Container\ContainerInterface;
+use Psr\Http\Client\ClientInterface;
 use Psr\SimpleCache\CacheInterface;
 use Symfony\Component\Cache\Adapter\NullAdapter;
 use Symfony\Component\Cache\Adapter\PhpFilesAdapter;
@@ -27,6 +32,11 @@ return [
         }
 
         return new Psr16Cache(new NullAdapter());
+    },
+    ClientInterface::class => static function (): ClientInterface {
+        $client = new MultiCurl(new ResponseFactory());
+
+        return new Browser($client, new RequestFactory());
     },
     I18nInterface::class => static function (ContainerInterface $container): I18nInterface {
         if (false === $container->has('i18n.path.language.default')) {
