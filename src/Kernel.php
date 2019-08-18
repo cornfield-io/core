@@ -219,7 +219,7 @@ final class Kernel implements RouteCollectorProxyInterface
         $resolver->setAllowedTypes('charset', 'string');
         $resolver->setAllowedTypes('path.cache', ['null', 'string']);
         $resolver->setAllowedTypes('path.configuration', ['null', 'string']);
-        $resolver->setAllowedTypes('path.configuration', ['null', 'string[]']);
+        $resolver->setAllowedTypes('path.configuration.other', ['null', 'string[]']);
 
         $normalizePath = static function (Options $options, ?string $value): ?string {
             return null === $value ? null : FilesystemHelper::path($value);
