@@ -6,12 +6,12 @@ namespace Cornfield\Core\Controller;
 
 use Cornfield\Core\Exception\ResponseException;
 use Cornfield\Core\Exception\TemplateException;
+use Cornfield\Core\Model\RouterModel;
 use Cornfield\Core\Response\HtmlResponse;
 use Cornfield\Core\Response\JsonResponse;
 use Cornfield\Core\Template\TemplateInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
-use Slim\App;
 
 abstract class AbstractController
 {
@@ -67,11 +67,12 @@ abstract class AbstractController
 
     /**
      * @param string $name
+     * @param array  $data
      *
      * @return string
      */
-    protected function urlFor(string $name): string
+    protected function urlFor(string $name, array $data = []): string
     {
-        return $this->container->get(App::class)->getRouteCollector()->getRouteParser()->urlFor($name);
+        return $this->container->get(RouterModel::class)->urlFor($name, $data);
     }
 }
