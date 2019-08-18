@@ -10,6 +10,7 @@ use Cornfield\Core\I18n\JsonI18n;
 use Cornfield\Core\Session\NativeSession;
 use Cornfield\Core\Session\SessionInterface;
 use Cornfield\Core\Template\TemplateInterface;
+use Cornfield\Core\Template\TwigExtension\UniversalExtension;
 use Cornfield\Core\Template\TwigTemplate;
 use Psr\Container\ContainerInterface;
 use Psr\SimpleCache\CacheInterface;
@@ -68,9 +69,13 @@ return [
 
         $extensions = [];
 
-        foreach (['template.twig.extensions', 'template.twig.default.extensions'] as $list) {
-            if ($container->has($list)) {
-                $extensions += (array) $container->get($list);
+        if ($container->has('template.twig.default.extensions')) {
+            $extensions += (array) $container->get('template.twig.default.extensions');
+        }
+
+        if ($container->has('template.twig.extensions')) {
+            foreach ($container->get('template.twig.extensions') as $extension) {
+                $extensions[] = new UniversalExtension($extension);
             }
         }
 
