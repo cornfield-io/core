@@ -173,16 +173,20 @@ final class Kernel implements RouteCollectorProxyInterface
     {
         $builder = new ContainerBuilder();
         $builder->addDefinitions($options);
+        $files = [];
 
         if (null !== $options['path.configuration']) {
             $root = FilesystemHelper::path($options['path.configuration']);
+            array_push($files, $root.'Configuration.php', $root.'Configuration.'.$options['environment'].'.php');
+        }
 
-            foreach (['Configuration', 'Configuration.'.$options['environment']] as $file) {
-                $path = $root.$file.'.php';
+        if (null !== $options['path.configuration.other']) {
+            array_push($files, ...$options['path.configuration.other']);
+        }
 
-                if (FilesystemHelper::isFileReadable($path)) {
-                    $builder->addDefinitions($path);
-                }
+        foreach ($files as $file) {
+            if (FilesystemHelper::isFileReadable($file)) {
+                $builder->addDefinitions($file);
             }
         }
 
@@ -208,12 +212,14 @@ final class Kernel implements RouteCollectorProxyInterface
                 'environment' => getenv('PHP_ENVIRONMENT') ?: Constants::ENV_PRODUCTION,
                 'path.cache' => null,
                 'path.configuration' => null,
+                'path.configuration.other' => null,
             ]
         );
 
         $resolver->setAllowedTypes('charset', 'string');
         $resolver->setAllowedTypes('path.cache', ['null', 'string']);
         $resolver->setAllowedTypes('path.configuration', ['null', 'string']);
+        $resolver->setAllowedTypes('path.configuration', ['null', 'string[]']);
 
         $normalizePath = static function (Options $options, ?string $value): ?string {
             return null === $value ? null : FilesystemHelper::path($value);
