@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Cornfield\Core\Configuration;
 
 use Buzz\Browser;
-use Buzz\Client\FileGetContents;
+use Buzz\Client\Curl;
 use Cornfield\Core\Exception\InvalidParameterException;
 use Cornfield\Core\Http\Factory\RequestFactory;
 use Cornfield\Core\Http\Factory\ResponseFactory;
@@ -34,7 +34,7 @@ return [
         return new Psr16Cache(new NullAdapter());
     },
     ClientInterface::class => static function (): ClientInterface {
-        $client = new FileGetContents(new ResponseFactory());
+        $client = new Curl(new ResponseFactory());
 
         return new Browser($client, new RequestFactory());
     },
