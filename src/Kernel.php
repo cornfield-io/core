@@ -150,6 +150,10 @@ final class Kernel implements RouteCollectorProxyInterface
 
     private function configure(): void
     {
+        if ($this->container->has('timezone')) {
+            date_default_timezone_set($this->container->get('timezone'));
+        }
+
         $cache = $this->container->get('path.cache');
         if (null !== $cache) {
             $this->app->getRouteCollector()->setCacheFile($cache.'routes.cache');
