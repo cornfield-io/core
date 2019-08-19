@@ -112,9 +112,7 @@ final class NativeSession implements SessionInterface
         $expires = $this->get(self::REGENERATE_NAME, '');
 
         if ('' === $expires || false === is_string($expires)) {
-            $this->set(self::REGENERATE_NAME, $now->format(self::DATETIME_FORMAT));
-
-            return $this->clear();
+            return $this->clear() && $this->set(self::REGENERATE_NAME, $now->format(self::DATETIME_FORMAT));
         }
 
         $dt = (new DateTime($expires))->add(new DateInterval(self::REGENERATE_INTERVAL));
