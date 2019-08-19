@@ -95,24 +95,34 @@ final class NativeSession implements SessionInterface
 
     /**
      * {@inheritdoc}
+     *
+     * @throws Exception
      */
     public function clear(): bool
     {
         $_SESSION = [];
 
-        return session_unset() && session_regenerate_id(true);
+        return session_unset() && session_regenerate_id(true) && $this->regenerate(false);
     }
 
     /**
+     * @param bool $clear
+     *
+     * @return bool
+     *
      * @throws Exception
      */
-    private function regenerate(): bool
+    private function regenerate($clear = true): bool
     {
         $now = new DateTime();
         $expires = $this->get(self::REGENERATE_NAME, '');
 
         if ('' === $expires || false === is_string($expires)) {
-            return $this->clear() && $this->set(self::REGENERATE_NAME, $now->format(self::DATETIME_FORMAT));
+            if (true === $clear) {
+                return $this->clear();
+            }
+
+            return $this->set(self::REGENERATE_NAME, $now->format(self::DATETIME_FORMAT));
         }
 
         $dt = (new DateTime($expires))->add(new DateInterval(self::REGENERATE_INTERVAL));
