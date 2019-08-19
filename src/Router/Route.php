@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Cornfield\Core\Router;
 
+use Psr\Http\Server\MiddlewareInterface;
 use Slim\Interfaces\RouteInterface as SlimRouteInterface;
 
 final class Route implements RouteInterface
@@ -21,6 +22,26 @@ final class Route implements RouteInterface
     public function __construct(SlimRouteInterface $route)
     {
         $this->route = $route;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function add($middleware): RouteInterface
+    {
+        $this->route->add($middleware);
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function addMiddleware(MiddlewareInterface $middleware): RouteInterface
+    {
+        $this->route->addMiddleware($middleware);
+
+        return $this;
     }
 
     /**
