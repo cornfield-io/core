@@ -39,7 +39,7 @@
     "psr/http-server-handler": "^1.0",
     "psr/http-server-middleware": "^1.0",
     "psr/simple-cache": "^1.0",
-    "slim/slim": "^4.1",
+    "slim/slim": "^4.2",
     "symfony/cache": "^4.3",
     "symfony/options-resolver": "^4.3",
     "twig/twig": "^2.11"
@@ -51,7 +51,7 @@
     "phpstan/phpstan-strict-rules": "^0.11.1",
     "roave/no-floaters": "^1.1",
     "roave/security-advisories": "dev-master",
-    "vimeo/psalm": "^3.4"
+    "vimeo/psalm": "^3.5"
   },
   "scripts": {
     "dev": [
