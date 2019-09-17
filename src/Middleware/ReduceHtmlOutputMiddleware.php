@@ -19,6 +19,11 @@ final class ReduceHtmlOutputMiddleware implements MiddlewareInterface
      */
     private $reduce = false;
 
+    /**
+     * ReduceHtmlOutputMiddleware constructor.
+     *
+     * @param ContainerInterface $container
+     */
     public function __construct(ContainerInterface $container)
     {
         if ($container->has('environment')) {
