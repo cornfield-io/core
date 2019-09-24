@@ -11,34 +11,24 @@ use Twig\TwigFunction;
 final class UniversalExtension extends AbstractExtension
 {
     /**
-     * @var callable|null
+     * @var TwigFunction[]
      */
-    private $callable;
-
-    /**
-     * @var string
-     */
-    private $name;
-
-    /**
-     * @var array
-     */
-    private $options;
+    private $extensions = [];
 
     /**
      * UniversalExtension constructor.
      *
-     * @param array $extension
+     * @param array $extensions
      */
-    public function __construct(array $extension)
+    public function __construct(array $extensions)
     {
         $resolver = new OptionsResolver();
         $this->configureOptions($resolver);
-        $options = $resolver->resolve($extension);
 
-        $this->name = $options['name'];
-        $this->callable = $options['callable'];
-        $this->options = $options['options'];
+        foreach ($extensions as $extension) {
+            $options = $resolver->resolve($extension);
+            $this->extensions[] = new TwigFunction($options['name'], $options['callable'], $options['options']);
+        }
     }
 
     /**
@@ -46,9 +36,7 @@ final class UniversalExtension extends AbstractExtension
      */
     public function getFunctions(): array
     {
-        return [
-            new TwigFunction($this->name, $this->callable, $this->options),
-        ];
+        return $this->extensions;
     }
 
     /**

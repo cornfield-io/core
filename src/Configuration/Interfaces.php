@@ -84,9 +84,7 @@ return [
         }
 
         if ($container->has('template.twig.extensions')) {
-            foreach ($container->get('template.twig.extensions') as $extension) {
-                $extensions[] = new UniversalExtension($extension);
-            }
+            $extensions[] = new UniversalExtension($container->get('template.twig.extensions'));
         }
 
         return new TwigTemplate($container->get('template.path.views'), $options, $extensions);

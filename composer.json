@@ -60,8 +60,8 @@
       "@quality"
     ],
     "fix-style": [
-      "php-cs-fixer fix src --rules=@PSR1,@PSR2,@Symfony",
-      "php-cs-fixer fix tests --rules=@PSR1,@PSR2,@Symfony"
+      "php-cs-fixer fix src --rules=@Symfony",
+      "php-cs-fixer fix tests --rules=@Symfony"
     ],
     "quality": [
       "psalm",
