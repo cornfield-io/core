@@ -73,9 +73,11 @@ return [
             $options += ['cache' => $container->get('template.path.cache') ?? false];
         }
 
-        if (false === $container->has('template.path.views')) {
+        if (false === $container->has('template.path.views') || null === $container->get('template.path.views')) {
             throw new InvalidParameterException('The key "template.path.views" is undefined');
         }
+
+        $template = $container->has('template.path.views.namespace') ? $container->get('template.path.views.namespace') : null;
 
         $extensions = [];
 
@@ -87,6 +89,6 @@ return [
             $extensions[] = new UniversalExtension($container->get('template.twig.extensions'));
         }
 
-        return new TwigTemplate($container->get('template.path.views'), $options, $extensions);
+        return new TwigTemplate($container->get('template.path.views'), $options, $extensions, $template);
     },
 ];

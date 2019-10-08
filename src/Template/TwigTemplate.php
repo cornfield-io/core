@@ -24,13 +24,21 @@ final class TwigTemplate implements TemplateInterface
      * @param string|string[]      $path
      * @param array                $options
      * @param ExtensionInterface[] $extensions
+     * @param array|null           $template
      *
      * @throws TemplateException
      */
-    public function __construct($path, array $options = [], array $extensions = [])
+    public function __construct($path, array $options = [], array $extensions = [], ?array $template = null)
     {
         try {
             $loader = new FilesystemLoader($path);
+
+            if (null !== $template) {
+                foreach ($template as $namespace => $directory) {
+                    $loader->addPath($directory, $namespace);
+                }
+            }
+
             $this->twig = new Environment($loader, $options);
 
             if ($this->twig->isDebug()) {

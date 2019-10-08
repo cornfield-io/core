@@ -39,7 +39,7 @@
     "psr/http-server-handler": "^1.0",
     "psr/http-server-middleware": "^1.0",
     "psr/simple-cache": "^1.0",
-    "slim/slim": "^4.2",
+    "slim/slim": "^4.3",
     "symfony/cache": "^4.3",
     "symfony/options-resolver": "^4.3",
     "twig/twig": "^2.11"
@@ -60,8 +60,7 @@
       "@quality"
     ],
     "fix-style": [
-      "php-cs-fixer fix src --rules=@Symfony",
-      "php-cs-fixer fix tests --rules=@Symfony"
+      "php-cs-fixer fix src --rules=@Symfony"
     ],
     "quality": [
       "psalm",
