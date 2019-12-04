@@ -21,7 +21,7 @@
     }
   },
   "require": {
-    "php": ">=7.2",
+    "php": ">=7.4",
     "ext-curl": "*",
     "ext-hash": "*",
     "ext-json": "*",
@@ -42,16 +42,16 @@
     "slim/slim": "^4.3",
     "symfony/cache": "^4.3",
     "symfony/options-resolver": "^4.3",
-    "twig/twig": "^2.11"
+    "twig/twig": "^3.0"
   },
   "require-dev": {
-    "friendsofphp/php-cs-fixer": "^2.15",
+    "friendsofphp/php-cs-fixer": "^2.16",
     "maglnet/composer-require-checker": "^2.0",
-    "phpstan/phpstan": "^0.11.12",
+    "phpstan/phpstan": "^0.11.19",
     "phpstan/phpstan-strict-rules": "^0.11.1",
-    "roave/no-floaters": "^1.1",
+    "roave/no-floaters": "^1.2",
     "roave/security-advisories": "dev-master",
-    "vimeo/psalm": "^3.5"
+    "vimeo/psalm": "^3.7.2"
   },
   "scripts": {
     "dev": [
