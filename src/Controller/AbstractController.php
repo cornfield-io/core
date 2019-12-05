@@ -56,7 +56,7 @@ abstract class AbstractController
             $response,
             $this->container->get(TemplateInterface::class)->render($view, $data),
             $status,
-            (string) $this->container->get('charset')
+            (string) $this->container->get('app.charset')
         );
     }
 }
