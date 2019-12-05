@@ -2,9 +2,8 @@
 
 declare(strict_types=1);
 
-namespace Cornfield\Core\Response;
+namespace Cornfield\Core\Http\Response;
 
-use Cornfield\Core\Exception\ResponseException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 
@@ -16,8 +15,6 @@ final class JsonResponse extends AbstractResponse
      * @param int                    $status
      *
      * @return ResponseInterface
-     *
-     * @throws ResponseException
      */
     public static function from(ResponseInterface $response, $body, int $status = 200): ResponseInterface
     {
@@ -32,8 +29,6 @@ final class JsonResponse extends AbstractResponse
      * @param int                    $status
      *
      * @return ResponseInterface
-     *
-     * @throws ResponseException
      */
     public static function fromScratch($body, int $status = 200): ResponseInterface
     {

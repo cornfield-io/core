@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace Cornfield\Core\I18n;
 
+use Cornfield\Core\Exception\I18nException;
 use Cornfield\Core\Exception\InvalidParameterException;
-use Cornfield\Core\Exception\JsonException;
 use Cornfield\Core\Helper\FilesystemHelper;
 use Cornfield\Core\Helper\JsonHelper;
+use Exception;
 use Psr\SimpleCache\CacheInterface;
 use Psr\SimpleCache\InvalidArgumentException;
 
@@ -16,7 +17,7 @@ final class JsonI18n implements I18nInterface
     /**
      * @var array
      */
-    private $translation = [];
+    private array $translation = [];
 
     /**
      * JsonI18n constructor.
@@ -25,9 +26,7 @@ final class JsonI18n implements I18nInterface
      * @param string         $default
      * @param string         $callback
      *
-     * @throws InvalidArgumentException
-     * @throws InvalidParameterException
-     * @throws JsonException
+     * @throws I18nException
      */
     public function __construct(CacheInterface $cache, string $default, string $callback = '')
     {
@@ -59,30 +58,36 @@ final class JsonI18n implements I18nInterface
      * @param string         $default
      * @param string         $callback
      *
-     * @throws InvalidArgumentException
-     * @throws InvalidParameterException
-     * @throws JsonException
+     * @return void
+     *
+     * @throws I18nException
      */
     private function load(CacheInterface $cache, string $default, string $callback): void
     {
-        $key = 'i18n.'.hash('sha256', $default.$callback);
+        try {
+            $key = 'i18n.'.hash('sha256', $default.$callback);
 
-        if ($cache->has($key)) {
-            $this->translation = $cache->get($key);
+            if ($cache->has($key)) {
+                $this->translation = $cache->get($key);
 
-            return;
-        }
-
-        foreach ([$default => null, $callback => ''] as $file => $present) {
-            $content = FilesystemHelper::getFileContent($file, $present);
-
-            if ('' === $content) {
-                continue;
+                return;
             }
 
-            $this->translation += JsonHelper::decode($content, true);
-        }
+            foreach ([$default => null, $callback => ''] as $file => $present) {
+                $content = FilesystemHelper::getFileContent($file, $present);
 
-        $cache->set($key, $this->translation);
+                if ('' === $content) {
+                    continue;
+                }
+
+                $this->translation += JsonHelper::decode($content, true);
+            }
+
+            $cache->set($key, $this->translation);
+        } catch (InvalidArgumentException $exception) {
+            throw new I18nException('Impossible to load translations', 0, $exception);
+        } catch (Exception $exception) {
+            throw new I18nException('Impossible to load translations', 0, $exception);
+        }
     }
 }

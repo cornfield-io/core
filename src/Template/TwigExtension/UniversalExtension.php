@@ -13,7 +13,7 @@ final class UniversalExtension extends AbstractExtension
     /**
      * @var TwigFunction[]
      */
-    private $extensions = [];
+    private array $extensions = [];
 
     /**
      * UniversalExtension constructor.
@@ -41,10 +41,13 @@ final class UniversalExtension extends AbstractExtension
 
     /**
      * @param OptionsResolver $resolver
+     *
+     * @return void
      */
     private function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults(['options' => []]);
+
         $resolver->setRequired(['name', 'callable', 'options']);
 
         $resolver->setAllowedTypes('name', 'string');

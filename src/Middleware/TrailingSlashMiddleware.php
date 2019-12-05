@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace Cornfield\Core\Middleware;
 
-use Cornfield\Core\Exception\ResponseException;
-use Cornfield\Core\Response\RedirectResponse;
+use Cornfield\Core\Http\Response\RedirectResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -15,8 +14,6 @@ final class TrailingSlashMiddleware implements MiddlewareInterface
 {
     /**
      * {@inheritdoc}
-     *
-     * @throws ResponseException
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {

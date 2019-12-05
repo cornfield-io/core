@@ -2,10 +2,8 @@
 
 declare(strict_types=1);
 
-namespace Cornfield\Core\Response;
+namespace Cornfield\Core\Http\Response;
 
-use Cornfield\Core\Exception\ResponseException;
-use Exception;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\UriInterface;
 
@@ -16,15 +14,9 @@ final class RedirectResponse extends AbstractResponse
      * @param int                 $status
      *
      * @return ResponseInterface
-     *
-     * @throws ResponseException
      */
     public static function fromScratch($uri, int $status = 302): ResponseInterface
     {
-        try {
-            return self::getResponse()->withStatus($status)->withHeader('Location', (string) $uri);
-        } catch (Exception $exception) {
-            throw new ResponseException('Uri must be a string or UriInterface', 0, $exception);
-        }
+        return self::getResponse()->withStatus($status)->withHeader('Location', (string) $uri);
     }
 }

@@ -4,25 +4,25 @@ declare(strict_types=1);
 
 namespace Cornfield\Core\Template\TwigExtension;
 
-use Cornfield\Core\Model\RouterModel;
+use Slim\App;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
 final class RouterExtension extends AbstractExtension
 {
     /**
-     * @var RouterModel
+     * @var App
      */
-    private $router;
+    private App $app;
 
     /**
      * RouterExtension constructor.
      *
-     * @param RouterModel $router
+     * @param App $app
      */
-    public function __construct(RouterModel $router)
+    public function __construct(App $app)
     {
-        $this->router = $router;
+        $this->app = $app;
     }
 
     /**
@@ -43,6 +43,6 @@ final class RouterExtension extends AbstractExtension
      */
     public function path(string $path, array $params = []): string
     {
-        return $this->router->urlFor($path, $params);
+        return $this->app->getRouteCollector()->getRouteParser()->urlFor($path, $params);
     }
 }

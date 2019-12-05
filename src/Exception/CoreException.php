@@ -4,6 +4,6 @@ declare(strict_types=1);
 
 namespace Cornfield\Core\Exception;
 
-final class ApplicationException extends AbstractException
+final class CoreException extends AbstractException
 {
 }

@@ -13,13 +13,13 @@ use Exception;
 final class NativeSession implements SessionInterface
 {
     private const DATETIME_FORMAT = DateTime::RFC3339;
-    private const REGENERATE_NAME = 'parameters.renew.expires';
+    private const REGENERATE_NAME = 'session.expires';
     private const REGENERATE_INTERVAL = 'PT5M';
 
     /**
      * @var array
      */
-    private $options;
+    private array $options;
 
     /**
      * NativeSession constructor.
@@ -29,11 +29,11 @@ final class NativeSession implements SessionInterface
     public function __construct(array $options = [])
     {
         $this->options = $options + [
-                'use_strict_mode' => true,
-                'cookie_httponly' => true,
-                'cookie_samesite' => 'Strict',
-                'cookie_secure' => RequestHelper::isHttps(),
-            ];
+            'use_strict_mode' => true,
+            'cookie_httponly' => true,
+            'cookie_samesite' => 'Strict',
+            'cookie_secure' => RequestHelper::isHttps(),
+        ];
     }
 
     /**
@@ -59,7 +59,11 @@ final class NativeSession implements SessionInterface
     public function get(string $key, $default = null)
     {
         if (false === $this->has($key)) {
-            return $default;
+            if (2 === func_num_args()) {
+                return $default;
+            }
+
+            throw new SessionException(sprintf('The key "%s" has not been defined', $key));
         }
 
         return $_SESSION[$key];
@@ -95,8 +99,6 @@ final class NativeSession implements SessionInterface
 
     /**
      * {@inheritdoc}
-     *
-     * @throws Exception
      */
     public function clear(): bool
     {
@@ -110,29 +112,33 @@ final class NativeSession implements SessionInterface
      *
      * @return bool
      *
-     * @throws Exception
+     * @throws SessionException
      */
     private function regenerate($clear = true): bool
     {
-        $now = new DateTime();
-        $expires = $this->get(self::REGENERATE_NAME, '');
+        try {
+            $now = new DateTime();
+            $expires = $this->get(self::REGENERATE_NAME, '');
 
-        if ('' === $expires || false === is_string($expires)) {
-            if (true === $clear) {
-                return $this->clear();
+            if ('' === $expires || false === is_string($expires)) {
+                if (true === $clear) {
+                    return $this->clear();
+                }
+
+                return $this->set(self::REGENERATE_NAME, $now->format(self::DATETIME_FORMAT));
             }
 
-            return $this->set(self::REGENERATE_NAME, $now->format(self::DATETIME_FORMAT));
+            $dt = (new DateTime($expires))->add(new DateInterval(self::REGENERATE_INTERVAL));
+
+            if ($dt < $now) {
+                $this->set(self::REGENERATE_NAME, $now->format(self::DATETIME_FORMAT));
+
+                return session_regenerate_id(true);
+            }
+
+            return true;
+        } catch (Exception $exception) {
+            throw new SessionException('Impossible to renew the session', 0, $exception);
         }
-
-        $dt = (new DateTime($expires))->add(new DateInterval(self::REGENERATE_INTERVAL));
-
-        if ($dt < $now) {
-            $this->set(self::REGENERATE_NAME, $now->format(self::DATETIME_FORMAT));
-
-            return session_regenerate_id(true);
-        }
-
-        return true;
     }
 }

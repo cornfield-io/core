@@ -4,6 +4,6 @@ declare(strict_types=1);
 
 namespace Cornfield\Core\Exception;
 
-final class ResponseException extends AbstractException
+final class I18nException extends AbstractException
 {
 }

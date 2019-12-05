@@ -4,21 +4,19 @@ declare(strict_types=1);
 
 namespace Cornfield\Core\Controller;
 
-use Cornfield\Core\Exception\ResponseException;
 use Cornfield\Core\Exception\TemplateException;
-use Cornfield\Core\Model\RouterModel;
-use Cornfield\Core\Response\HtmlResponse;
-use Cornfield\Core\Response\JsonResponse;
+use Cornfield\Core\Http\Response\HtmlResponse;
+use Cornfield\Core\Http\Response\JsonResponse;
 use Cornfield\Core\Template\TemplateInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 
-abstract class AbstractController
+final class AbstractController
 {
     /**
      * @var ContainerInterface
      */
-    protected $container;
+    private ContainerInterface $container;
 
     /**
      * AbstractController constructor.
@@ -36,8 +34,6 @@ abstract class AbstractController
      * @param int               $status
      *
      * @return ResponseInterface
-     *
-     * @throws ResponseException
      */
     protected function json(ResponseInterface $response, string $json, int $status = 200): ResponseInterface
     {
@@ -52,7 +48,6 @@ abstract class AbstractController
      *
      * @return ResponseInterface
      *
-     * @throws ResponseException
      * @throws TemplateException
      */
     protected function html(ResponseInterface $response, string $view, array $data = [], int $status = 200): ResponseInterface
@@ -61,18 +56,7 @@ abstract class AbstractController
             $response,
             $this->container->get(TemplateInterface::class)->render($view, $data),
             $status,
-            $this->container->has('charset') ? $this->container->get('charset') : 'utf-8'
+            (string) $this->container->get('charset')
         );
-    }
-
-    /**
-     * @param string $name
-     * @param array  $data
-     *
-     * @return string
-     */
-    protected function urlFor(string $name, array $data = []): string
-    {
-        return $this->container->get(RouterModel::class)->urlFor($name, $data);
     }
 }

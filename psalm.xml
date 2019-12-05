@@ -14,11 +14,11 @@
   </projectFiles>
 
   <issueHandlers>
-    <InvalidThrow>
+    <InvalidCatch>
       <errorLevel type="suppress">
-        <file name="src\I18n\JsonI18n.php" />
+        <file name="src\I18n\JsonI18n.php"/>
       </errorLevel>
-    </InvalidThrow>
+    </InvalidCatch>
 
     <LessSpecificReturnType errorLevel="info"/>
 

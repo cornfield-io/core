@@ -6,26 +6,20 @@ namespace Cornfield\Core\Configuration;
 
 use Cornfield\Core\Middleware\ReduceHtmlOutputMiddleware;
 use Cornfield\Core\Middleware\TrailingSlashMiddleware;
-use Cornfield\Core\Template\TwigExtension\I18nExtension;
 use Cornfield\Core\Template\TwigExtension\RouterExtension;
 use Psr\Container\ContainerInterface;
 
 return [
-    'middleware.add.default' => [
-        ReduceHtmlOutputMiddleware::class,
-        TrailingSlashMiddleware::class,
-    ],
-    'template.path.cache' => static function (ContainerInterface $container): ?string {
-        if ($container->has('path.cache')) {
-            return $container->get('path.cache').DIRECTORY_SEPARATOR.'Template';
-        }
-
-        return null;
+    'router.cache' => static function (ContainerInterface $container): bool {
+        return 'prod' === $container->get('app.env');
     },
-    'template.twig.default.extensions' => static function (ContainerInterface $container): array {
+    'router.middlewares.default' => static function (ContainerInterface $container): array {
         return [
-            $container->get(I18nExtension::class),
-            $container->get(RouterExtension::class),
+            $container->get(ReduceHtmlOutputMiddleware::class),
+            $container->get(TrailingSlashMiddleware::class),
         ];
+    },
+    'template.extensions.default' => static function (ContainerInterface $container): array {
+        return [$container->get(RouterExtension::class)];
     },
 ];

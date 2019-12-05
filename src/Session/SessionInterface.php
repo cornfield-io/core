@@ -16,10 +16,12 @@ interface SessionInterface
     public function start(): bool;
 
     /**
-     * @param string $key
-     * @param mixed  $default
+     * @param string     $key
+     * @param mixed|null $default
      *
      * @return mixed
+     *
+     * @throws SessionException
      */
     public function get(string $key, $default = null);
 
@@ -47,6 +49,8 @@ interface SessionInterface
 
     /**
      * @return bool
+     *
+     * @throws SessionException
      */
     public function clear(): bool;
 }

@@ -7,8 +7,8 @@ namespace Cornfield\Core\Template;
 use Cornfield\Core\Exception\TemplateException;
 use Exception;
 use Twig\Environment;
+use Twig\Extension\AbstractExtension;
 use Twig\Extension\DebugExtension;
-use Twig\Extension\ExtensionInterface;
 use Twig\Loader\FilesystemLoader;
 
 final class TwigTemplate implements TemplateInterface
@@ -16,38 +16,28 @@ final class TwigTemplate implements TemplateInterface
     /**
      * @var Environment
      */
-    private $twig;
+    private Environment $twig;
 
     /**
      * TwigTemplate constructor.
      *
-     * @param string|string[]      $path
-     * @param array                $options
-     * @param ExtensionInterface[] $extensions
-     * @param array|null           $template
+     * @param string|string[]     $path
+     * @param array               $options
+     * @param AbstractExtension[] $extensions
      *
      * @throws TemplateException
      */
-    public function __construct($path, array $options = [], array $extensions = [], ?array $template = null)
+    public function __construct($path, array $options = [], array $extensions = [])
     {
         try {
             $loader = new FilesystemLoader($path);
-
-            if (null !== $template) {
-                foreach ($template as $namespace => $directory) {
-                    $loader->addPath($directory, $namespace);
-                }
-            }
-
             $this->twig = new Environment($loader, $options);
 
             if ($this->twig->isDebug()) {
                 $this->twig->addExtension(new DebugExtension());
             }
 
-            foreach ($extensions as $extension) {
-                $this->twig->addExtension($extension);
-            }
+            $this->twig->setExtensions($extensions);
         } catch (Exception $exception) {
             throw new TemplateException('An error occurs during the loading of template manager', 0, $exception);
         }

@@ -9,6 +9,16 @@ use Cornfield\Core\Exception\InvalidParameterException;
 final class FilesystemHelper
 {
     /**
+     * @param string $pathname
+     *
+     * @return bool
+     */
+    public static function isDirWritable(string $pathname): bool
+    {
+        return is_dir($pathname) && is_writable($pathname);
+    }
+
+    /**
      * @param string $filename
      *
      * @return bool
@@ -50,43 +60,28 @@ final class FilesystemHelper
     }
 
     /**
-     * @param string   $filename
-     * @param int|null $default
+     * @param string $pathname
+     * @param int    $mode
+     * @param bool   $recursive
      *
-     * @return int
-     *
-     * @throws InvalidParameterException
+     * @return bool
      */
-    public static function getFiletime(string $filename, ?int $default = 0): int
+    public static function mkdir(string $pathname, int $mode = 0777, bool $recursive = true): bool
     {
-        if (false === is_file($filename)) {
-            if (null === $default) {
-                throw new InvalidParameterException('Can not get file modification time');
-            }
-
-            return $default;
+        if (is_dir($pathname)) {
+            return true;
         }
 
-        $time = filemtime($filename);
-
-        if (false === is_int($time)) {
-            if (null === $default) {
-                throw new InvalidParameterException('Can not get file modification time');
-            }
-
-            return $default;
-        }
-
-        return $time;
+        return mkdir($pathname, $mode, $recursive);
     }
 
     /**
-     * @param string $path
+     * @param string $pathname
      *
      * @return string
      */
-    public static function path(string $path): string
+    public static function path(string $pathname): string
     {
-        return rtrim(trim($path), DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
+        return rtrim(trim($pathname), DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
     }
 }

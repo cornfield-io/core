@@ -2,9 +2,8 @@
 
 declare(strict_types=1);
 
-namespace Cornfield\Core\Response;
+namespace Cornfield\Core\Http\Response;
 
-use Cornfield\Core\Exception\ResponseException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 
@@ -17,8 +16,6 @@ final class HtmlResponse extends AbstractResponse
      * @param string                 $charset
      *
      * @return ResponseInterface
-     *
-     * @throws ResponseException
      */
     public static function from(ResponseInterface $response, $body, int $status = 200, string $charset = 'utf-8'): ResponseInterface
     {
@@ -34,8 +31,6 @@ final class HtmlResponse extends AbstractResponse
      * @param string                 $charset
      *
      * @return ResponseInterface
-     *
-     * @throws ResponseException
      */
     public static function fromScratch($body, int $status = 200, string $charset = 'utf-8'): ResponseInterface
     {
