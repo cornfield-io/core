@@ -5,11 +5,18 @@ declare(strict_types=1);
 namespace Cornfield\Core;
 
 use Cornfield\Core\Exception\CoreException;
+use Cornfield\Core\Router\Route;
+use Cornfield\Core\Router\RouteCollectorProxy;
+use Cornfield\Core\Router\RouteCollectorProxyInterface;
+use Cornfield\Core\Router\RouteGroup;
+use Cornfield\Core\Router\RouteGroupInterface;
+use Cornfield\Core\Router\RouteInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Slim\App;
+use Slim\Routing\RouteCollectorProxy as SlimRouteCollectorProxy;
 
-final class Kernel
+final class Kernel implements RouteCollectorProxyInterface
 {
     /**
      * @var App
@@ -34,6 +41,82 @@ final class Kernel
         $this->app = $this->container->get(App::class);
 
         $this->configure();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function get(string $pattern, $callable): RouteInterface
+    {
+        return new Route($this->app->get($pattern, $callable));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function post(string $pattern, $callable): RouteInterface
+    {
+        return new Route($this->app->post($pattern, $callable));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function put(string $pattern, $callable): RouteInterface
+    {
+        return new Route($this->app->put($pattern, $callable));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function patch(string $pattern, $callable): RouteInterface
+    {
+        return new Route($this->app->patch($pattern, $callable));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function delete(string $pattern, $callable): RouteInterface
+    {
+        return new Route($this->app->delete($pattern, $callable));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function options(string $pattern, $callable): RouteInterface
+    {
+        return new Route($this->app->options($pattern, $callable));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function any(string $pattern, $callable): RouteInterface
+    {
+        return new Route($this->app->any($pattern, $callable));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function map(array $methods, string $pattern, $callable): RouteInterface
+    {
+        return new Route($this->app->map($methods, $pattern, $callable));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function group(string $pattern, callable $callable): RouteGroupInterface
+    {
+        $factory = function (SlimRouteCollectorProxy $routeCollectorProxy) use ($callable): void {
+            $callable(new RouteCollectorProxy($routeCollectorProxy));
+        };
+
+        return new RouteGroup($this->app->group($pattern, $factory));
     }
 
     /**
