@@ -19,6 +19,16 @@ final class StringHelper
     /**
      * @param string $str
      *
+     * @return string
+     */
+    public static function escape(string $str): string
+    {
+        return htmlentities($str, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+    }
+
+    /**
+     * @param string $str
+     *
      * @return int
      */
     public static function length(string $str): int
