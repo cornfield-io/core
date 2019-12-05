@@ -41,7 +41,7 @@ final class ReduceHtmlOutputMiddleware implements MiddlewareInterface
             )  # If we made it here, we are not in a blacklist tag.
             %Six';
 
-            $content = $response->getBody()->getContents();
+            $content = (string) $response->getBody();
 
             return $response->withBody((new StreamFactory())->createStream(preg_replace($regex, '', $content) ?? $content));
         }
