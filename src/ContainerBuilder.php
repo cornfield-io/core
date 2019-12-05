@@ -46,6 +46,10 @@ final class ContainerBuilder
             $path = FilesystemHelper::path(__DIR__.DIRECTORY_SEPARATOR.'Configuration');
             $containerBuilder->addDefinitions($path.'Parameters.php', $path.'Services.php');
 
+            foreach ($options['container.definitions.files'] as $filename) {
+                $containerBuilder->addDefinitions($filename);
+            }
+
             $containerBuilder->addDefinitions([
                 'app.charset' => $options['charset'],
                 'app.env' => $options['environment'],
@@ -81,6 +85,7 @@ final class ContainerBuilder
             'container.autowiring' => true,
             'container.annotations' => false,
             'container.cache' => 'prod' === $environment,
+            'container.definitions.files' => [],
             'path.cache' => null,
         ]);
 
@@ -89,6 +94,7 @@ final class ContainerBuilder
         $resolver->setAllowedTypes('container.autowiring', 'bool');
         $resolver->setAllowedTypes('container.annotations', 'bool');
         $resolver->setAllowedTypes('container.cache', 'bool');
+        $resolver->setAllowedTypes('container.definitions.files', 'string[]');
         $resolver->setAllowedTypes('path.cache', ['null', 'string']);
 
         $resolver->setNormalizer('path.cache', static function (Options $options, ?string $pathname): ?string {
