@@ -51,7 +51,7 @@ final class UniversalExtension extends AbstractExtension
         $resolver->setRequired(['name', 'callable', 'options']);
 
         $resolver->setAllowedTypes('name', 'string');
-        $resolver->setAllowedTypes('callable', ['array', 'callable', 'null']);
+        $resolver->setAllowedTypes('callable', ['callable', 'null']);
         $resolver->setAllowedTypes('options', 'array');
     }
 }
