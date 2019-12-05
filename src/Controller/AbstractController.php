@@ -11,7 +11,7 @@ use Cornfield\Core\Template\TemplateInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 
-final class AbstractController
+abstract class AbstractController
 {
     /**
      * @var ContainerInterface
