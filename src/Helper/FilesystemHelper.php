@@ -9,6 +9,37 @@ use Cornfield\Core\Exception\InvalidParameterException;
 final class FilesystemHelper
 {
     /**
+     * @param string   $filename
+     * @param int|null $default
+     *
+     * @return int
+     *
+     * @throws InvalidParameterException
+     */
+    public static function filetime(string $filename, ?int $default = 0): int
+    {
+        if (false === is_file($filename)) {
+            if (null === $default) {
+                throw new InvalidParameterException('Can not get file modification time');
+            }
+
+            return $default;
+        }
+
+        $time = filemtime($filename);
+
+        if (false === is_int($time)) {
+            if (null === $default) {
+                throw new InvalidParameterException('Can not get file modification time');
+            }
+
+            return $default;
+        }
+
+        return $time;
+    }
+
+    /**
      * @param string $pathname
      *
      * @return bool
