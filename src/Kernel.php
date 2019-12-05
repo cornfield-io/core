@@ -52,6 +52,14 @@ final class Kernel implements RouteCollectorProxyInterface
     }
 
     /**
+     * @return void
+     */
+    public function run(): void
+    {
+        $this->app->run();
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function get(string $pattern, $callable): RouteInterface
