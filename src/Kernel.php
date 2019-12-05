@@ -143,6 +143,14 @@ final class Kernel implements RouteCollectorProxyInterface
             $this->app->getRouteCollector()->setCacheFile($this->container->get('path.cache').'routes.cache');
         }
 
+        $displayErrorDetails = false;
+
+        if ('dev' === $this->container->get('app.env')) {
+            $displayErrorDetails = true;
+        }
+
+        $this->app->addErrorMiddleware($displayErrorDetails, true, true);
+
         foreach ($this->container->get('router.middlewares.default') as $middleware) {
             if ($middleware instanceof MiddlewareInterface) {
                 $this->app->addMiddleware($middleware);
