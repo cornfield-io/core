@@ -44,6 +44,14 @@ final class Kernel implements RouteCollectorProxyInterface
     }
 
     /**
+     * @return ContainerInterface
+     */
+    public function getContainer(): ContainerInterface
+    {
+        return $this->container;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function get(string $pattern, $callable): RouteInterface
