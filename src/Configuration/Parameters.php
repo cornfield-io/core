@@ -21,9 +21,12 @@ return [
         ];
     },
     'template.extensions.default' => static function (ContainerInterface $container): array {
-        return [
-            $container->get(I18nExtension::class),
-            $container->get(RouterExtension::class),
-        ];
+        $list = [$container->get(RouterExtension::class)];
+
+        if ($container->has('i18n.path.language.default')) {
+            $list[] = $container->get(I18nExtension::class);
+        }
+
+        return $list;
     },
 ];
