@@ -15,22 +15,27 @@ use Psr\SimpleCache\InvalidArgumentException;
 final class JsonI18n implements I18nInterface
 {
     /**
-     * @var array
+     * @var array<string, string>
      */
     private array $translation = [];
 
     /**
      * JsonI18n constructor.
      *
-     * @param CacheInterface $cache
-     * @param string         $default
-     * @param string         $callback
+     * @param CacheInterface  $cache
+     * @param string|string[] $paths
+     * @param string          $default
+     * @param string          $callback
      *
      * @throws I18nException
      */
-    public function __construct(CacheInterface $cache, string $default, string $callback = '')
+    public function __construct(CacheInterface $cache, $paths, string $default, string $callback = '')
     {
-        $this->load($cache, $default, $callback);
+        if (false === is_array($paths)) {
+            $paths = [$paths];
+        }
+
+        $this->load($cache, $paths, $default, $callback);
     }
 
     /**
@@ -55,6 +60,7 @@ final class JsonI18n implements I18nInterface
 
     /**
      * @param CacheInterface $cache
+     * @param string[]       $paths
      * @param string         $default
      * @param string         $callback
      *
@@ -62,7 +68,7 @@ final class JsonI18n implements I18nInterface
      *
      * @throws I18nException
      */
-    private function load(CacheInterface $cache, string $default, string $callback): void
+    private function load(CacheInterface $cache, $paths, string $default, string $callback): void
     {
         try {
             $key = 'i18n.'.hash('sha256', $default.$callback);
@@ -74,13 +80,15 @@ final class JsonI18n implements I18nInterface
             }
 
             foreach ([$default => null, $callback => ''] as $file => $present) {
-                $content = FilesystemHelper::getFileContent($file, $present);
+                foreach ($paths as $path) {
+                    $content = FilesystemHelper::getFileContent(FilesystemHelper::path($path).$file, $present);
 
-                if ('' === $content) {
-                    continue;
+                    if ('' === $content) {
+                        continue;
+                    }
+
+                    $this->translation += JsonHelper::decode($content, true);
                 }
-
-                $this->translation += JsonHelper::decode($content, true);
             }
 
             $cache->set($key, $this->translation);

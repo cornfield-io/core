@@ -31,7 +31,7 @@ final class Kernel implements RouteCollectorProxyInterface
     /**
      * Kernel constructor.
      *
-     * @param array $options
+     * @param array<string, mixed> $options
      *
      * @throws CoreException
      */

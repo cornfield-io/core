@@ -18,7 +18,7 @@ final class UniversalExtension extends AbstractExtension
     /**
      * UniversalExtension constructor.
      *
-     * @param array $extensions
+     * @param array<string, mixed> $extensions
      */
     public function __construct(array $extensions)
     {

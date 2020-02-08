@@ -3,7 +3,6 @@ includes:
   - vendor/roave/no-floaters/rules.neon
 
 parameters:
-  checkMissingIterableValueType: false
   disallowFloatsEverywhere: true
   level: max
   paths:

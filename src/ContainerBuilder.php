@@ -19,7 +19,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 final class ContainerBuilder
 {
     /**
-     * @param array $options
+     * @param array<string, mixed> $options
      *
      * @return ContainerInterface
      *
@@ -68,9 +68,9 @@ final class ContainerBuilder
     }
 
     /**
-     * @param array $options
+     * @param array<string, mixed> $options
      *
-     * @return array
+     * @return array<string, mixed>
      *
      * @throws InvalidParameterException
      */

@@ -36,8 +36,8 @@ final class RouterExtension extends AbstractExtension
     }
 
     /**
-     * @param string $path
-     * @param array  $params
+     * @param string               $path
+     * @param array<string, mixed> $params
      *
      * @return string
      */

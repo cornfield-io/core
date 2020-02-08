@@ -9,8 +9,8 @@ use Cornfield\Core\Exception\TemplateException;
 interface TemplateInterface
 {
     /**
-     * @param string $view
-     * @param array  $parameters
+     * @param string               $view
+     * @param array<string, mixed> $parameters
      *
      * @return string
      *

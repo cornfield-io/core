@@ -21,9 +21,9 @@ final class TwigTemplate implements TemplateInterface
     /**
      * TwigTemplate constructor.
      *
-     * @param string|string[]     $paths
-     * @param array               $options
-     * @param AbstractExtension[] $extensions
+     * @param string|string[]      $paths
+     * @param array<string, mixed> $options
+     * @param AbstractExtension[]  $extensions
      *
      * @throws TemplateException
      */

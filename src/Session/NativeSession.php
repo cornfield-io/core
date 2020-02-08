@@ -17,14 +17,14 @@ final class NativeSession implements SessionInterface
     private const REGENERATE_INTERVAL = 'PT5M';
 
     /**
-     * @var array
+     * @var array<string, mixed>
      */
     private array $options;
 
     /**
      * NativeSession constructor.
      *
-     * @param array $options
+     * @param array<string, mixed> $options
      */
     public function __construct(array $options = [])
     {

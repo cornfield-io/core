@@ -28,14 +28,19 @@ return [
         return new Psr16Cache(new NullAdapter());
     },
     I18nInterface::class => static function (ContainerInterface $container): I18nInterface {
-        if (false === $container->has('i18n.path.language.default')) {
-            throw new InvalidParameterException('The key "i18n.path.language.default" is undefined');
+        if (false === $container->has('i18n.path.languages')) {
+            throw new InvalidParameterException('The key "i18n.path.languages" is undefined');
+        }
+
+        if (false === $container->has('i18n.language.default')) {
+            throw new InvalidParameterException('The key "i18n.language.default" is undefined');
         }
 
         return new JsonI18n(
             $container->get(CacheInterface::class),
-            (string) $container->get('i18n.path.language.default'),
-            $container->has('i18n.path.language.callback') ? (string) $container->has('i18n.path.language.callback') : ''
+            $container->get('i18n.path.languages'),
+            (string) $container->get('i18n.language.default'),
+            $container->has('i18n.language.callback') ? (string) $container->has('i18n.language.callback') : ''
         );
     },
     SessionInterface::class => static function (ContainerInterface $container): SessionInterface {

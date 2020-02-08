@@ -41,10 +41,10 @@ abstract class AbstractController
     }
 
     /**
-     * @param ResponseInterface $response
-     * @param string            $view
-     * @param array             $data
-     * @param int               $status
+     * @param ResponseInterface    $response
+     * @param string               $view
+     * @param array<string, mixed> $data
+     * @param int                  $status
      *
      * @return ResponseInterface
      *

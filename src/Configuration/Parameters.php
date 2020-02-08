@@ -23,7 +23,7 @@ return [
     'template.extensions.default' => static function (ContainerInterface $container): array {
         $list = [$container->get(RouterExtension::class)];
 
-        if ($container->has('i18n.path.language.default')) {
+        if ($container->has('i18n.path.languages') && $container->has('i18n.language.default')) {
             $list[] = $container->get(I18nExtension::class);
         }
 
