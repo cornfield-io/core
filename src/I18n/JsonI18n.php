@@ -81,7 +81,7 @@ final class JsonI18n implements I18nInterface
 
             foreach ([$default => null, $callback => ''] as $file => $present) {
                 foreach ($paths as $path) {
-                    $content = FilesystemHelper::getFileContent(FilesystemHelper::path($path).$file, $present);
+                    $content = FilesystemHelper::getFileContent(FilesystemHelper::path($path).$file.'.json', $present);
 
                     if ('' === $content) {
                         continue;
