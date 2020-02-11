@@ -37,16 +37,24 @@ final class I18nExtension extends AbstractExtension
     }
 
     /**
-     * @param string      $key
-     * @param string|null $default
+     * @param string|mixed[] $key
+     * @param string         $default
      *
      * @return string
      *
      * @throws InvalidParameterException
      */
-    public function i18n(string $key, ?string $default = ''): string
+    public function i18n($key, string $default = ''): string
     {
-        if (is_string($default) && false === $this->i18n->has($key)) {
+        if (is_array($key)) {
+            if (is_string($key[0]) && $this->i18n->has($key[0])) {
+                return sprintf($this->i18n->get($key[0]), ...array_slice($key, 1));
+            }
+
+            return $default;
+        }
+
+        if (false === $this->i18n->has($key)) {
             return $default;
         }
 
