@@ -32,7 +32,7 @@ final class I18nExtension extends AbstractExtension
     public function getFunctions(): array
     {
         return [
-            new TwigFunction('i18n', [$this, 'i18n']),
+            new TwigFunction('i18n', [$this, 'i18n'], ['is_safe' => ['html']]),
         ];
     }
 
